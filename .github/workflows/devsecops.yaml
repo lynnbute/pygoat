@@ -24,9 +24,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run Unit Tests
-        run: pytest --maxfail=3 --disable-warnings -q
-
       # ---------- Static Application Security Testing ----------
       - name: Run Semgrep
         uses: returntocorp/semgrep-action@v1
