@@ -2,9 +2,9 @@ name: DevSecOps CI/CD Pipeline
 
 on:
   push:
-    branches: [master]
+    branches: [master, ci/devsecops]
   pull_request:
-    branches: [master]
+    branches: [master, ci/devsecops]
 
 jobs:
   security-pipeline:
