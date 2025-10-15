@@ -37,12 +37,20 @@ jobs:
          distribution: temurin
          java-version: '17'
 
-  
-      - name: SonarQube Scan
-        uses: sonarsource/sonarqube-scan-action@v1.2
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      - name: Install SonarScanner
+        run: |
+         curl -sSLo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.8.1.3023-linux.zip
+         unzip sonar-scanner.zip
+         export PATH="$PWD/sonar-scanner-4.8.1.3023-linux/bin:$PATH"
+
+      - name: Run SonarScanner
+        run: |
+         ./sonar-scanner-4.8.1.3023-linux/bin/sonar-scanner \
+           -Dsonar.projectKey=pygoat \
+           -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
+           -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+
+         
 
       # ---------- Dependency Scanning ----------
       - name: Snyk Scan
