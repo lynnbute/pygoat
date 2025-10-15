@@ -11,9 +11,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # ---------- Checkout Code ----------
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      # ---------- Setup Python ----------
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -31,27 +33,23 @@ jobs:
           config: "p/owasp-top-ten"
         continue-on-error: true
 
-      # ---------- Code Quality & Analysis ----------
-      - name: Setup Java 17
-        uses: actions/setup-java@v3
-        with:
-          distribution: temurin
-          java-version: '17'
-
-      - name: Install SonarScanner
+      # ---------- Code Quality & Analysis (SonarScanner) ----------
+      - name: Install SonarScanner (Java 11 compatible)
         run: |
-          curl -sSLo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.8.1.3023-linux.zip
+          curl -sSLo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.7.0.2747-linux.zip
           unzip sonar-scanner.zip -d $HOME
-          echo "$HOME/sonar-scanner-4.8.1.3023-linux/bin" >> $GITHUB_PATH
+          echo "$HOME/sonar-scanner-4.7.0.2747-linux/bin" >> $GITHUB_PATH
 
       - name: Run SonarScanner
         env:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_ORG: ${{ secrets.SONAR_ORG }}
         run: |
-          sonar-scanner \
+          java -version
+          $HOME/sonar-scanner-4.7.0.2747-linux/bin/sonar-scanner \
             -Dsonar.projectKey=pygoat \
-            -Dsonar.organization=${{ secrets.SONAR_ORG }} \
+            -Dsonar.organization=${{ env.SONAR_ORG }} \
             -Dsonar.host.url=${{ env.SONAR_HOST_URL }} \
             -Dsonar.login=${{ env.SONAR_TOKEN }}
 
